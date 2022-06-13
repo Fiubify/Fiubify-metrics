@@ -4,13 +4,13 @@ const userEventSchema = mongoose.Schema(
   {
     action: {
       type: String,
-      enum: ["Login", "Signup"],
+      enum: ["Login", "Signup", "Password"],
       required: true,
     },
 
     type: {
       type: String,
-      enum: ["Federated", "Email"],
+      enum: ["Federated", "Email", "Reset"],
     },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
