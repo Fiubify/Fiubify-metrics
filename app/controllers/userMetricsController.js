@@ -3,7 +3,7 @@ const QueryParser = require("../utils/queryParser");
 const UserEvent = require("../models/userEvent");
 
 const getAllUsersEvents = async (req, res, next) => {
-  const queryParams = ["action"];
+  const queryParams = ["action", "type"];
 
   const queryParser = new QueryParser(queryParams, []);
   const query = queryParser.parseRequest(req);
@@ -20,6 +20,7 @@ const getAllUsersEvents = async (req, res, next) => {
     }
   } catch (err) {
     next(ApiError.internalError("Internal error when getting songs"));
+    return;
   }
 };
 
