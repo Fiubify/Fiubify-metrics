@@ -3,7 +3,7 @@ const QueryParser = require("../utils/queryParser");
 const ContentEvent = require("../models/contentEvent");
 
 const getAllContentEvents = async (req, res, next) => {
-  const queryParams = ["action", "type", "genre", "tier", "user"];
+  const queryParams = ["action", "genre", "tier", "user"];
 
   const queryParser = new QueryParser(queryParams, []);
   const query = queryParser.parseRequest(req);
@@ -25,12 +25,11 @@ const getAllContentEvents = async (req, res, next) => {
 };
 
 const createNewContentEvent = async (req, res, next) => {
-  const { action, type, tier, genre, user } = req.body;
+  const { action, tier, genre, user } = req.body;
 
   try {
     const newEvent = new ContentEvent({
       action: action,
-      type: type,
       tier: tier,
       genre: genre,
       user: user,

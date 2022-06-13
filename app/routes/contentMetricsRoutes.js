@@ -5,3 +5,5 @@ const contentMetricsController = require("../controllers/contentMetricsControlle
 
 router.get("/events", contentMetricsController.getAllContentEvents);
 router.post("/events", contentMetricsController.createNewContentEvent);
+
+module.exports = router;
