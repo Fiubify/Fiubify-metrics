@@ -75,7 +75,7 @@ describe("GET /users/events/", () => {
       .get("/users/events/")
       .query({ action: "Login" });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(3);
   });
 
@@ -84,7 +84,20 @@ describe("GET /users/events/", () => {
       .get("/users/events/")
       .query({ type: "Email" });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(4);
+  });
+});
+
+describe("POST /users/events/", () => {
+  it("Create an event", async () => {
+    const response = await request(app).post("/users/events/").send({
+      action: "Signup",
+      type: "Email",
+    });
+
+    expect(response.status).toEqual(201);
+    const allEvents = await request(app).get("/users/events");
+    expect(allEvents.body.data).toHaveLength(7);
   });
 });
