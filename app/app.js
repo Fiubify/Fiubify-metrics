@@ -12,6 +12,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
+// Routes import
+const userMetricsRoutes = require("./routes/userMetricsRoutes");
+const contentMetricsRoutes = require("./routes/contentMetricsRoutes");
+
+app.use("/users", userMetricsRoutes);
+app.use("/contents", contentMetricsRoutes);
 
 // Example route
 app.get("/", (req, res) => {
