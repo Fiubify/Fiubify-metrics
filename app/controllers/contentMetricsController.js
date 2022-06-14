@@ -3,7 +3,7 @@ const QueryParser = require("../utils/queryParser");
 const ContentEvent = require("../models/contentEvent");
 
 const getAllContentEvents = async (req, res, next) => {
-  const queryParams = ["action", "genre", "tier", "user"];
+  const queryParams = ["action", "genre", "tier", "user", "album", "song"];
 
   const queryParser = new QueryParser(queryParams, []);
   const query = queryParser.parseRequest(req);
@@ -25,7 +25,7 @@ const getAllContentEvents = async (req, res, next) => {
 };
 
 const createNewContentEvent = async (req, res, next) => {
-  const { action, tier, genre, user } = req.body;
+  const { action, tier, genre, user, album, song } = req.body;
 
   try {
     const newEvent = new ContentEvent({
@@ -33,6 +33,8 @@ const createNewContentEvent = async (req, res, next) => {
       tier: tier,
       genre: genre,
       user: user,
+      album: album,
+      song: song,
     });
 
     await newEvent.save();

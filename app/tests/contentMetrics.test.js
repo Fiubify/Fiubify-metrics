@@ -19,24 +19,32 @@ const testingEvents = [
     genre: "Jazz",
     tier: "Free",
     user: "1",
+    album: "Californication",
+    song: "Otherside",
   },
   {
     action: "Creation",
     genre: "Jazz",
     tier: "Free",
     user: "1",
+    album: "Californication",
+    song: "Otherside",
   },
   {
     action: "Listened",
     genre: "Electronic",
     tier: "Free",
     user: "1",
+    album: "Californication",
+    song: "Otherside",
   },
   {
     action: "Listened",
     genre: "Country",
     tier: "Premium",
     user: "2",
+    album: "Californication",
+    song: "Otherside",
   },
 ];
 
@@ -111,6 +119,8 @@ describe("POST /contents/events/", () => {
       genre: "Electronic",
       tier: "Premium",
       user: "3",
+      album: "Californication",
+      song: "Otherside",
     });
 
     expect(response.status).toEqual(201);

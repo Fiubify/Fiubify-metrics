@@ -19,6 +19,16 @@ const contentEvent = mongoose.Schema(
     user: {
       type: String,
     },
+
+    song: {
+      type: String,
+      required: true,
+    },
+
+    album: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );
