@@ -22,7 +22,6 @@ const contentEvent = mongoose.Schema(
 
     song: {
       type: String,
-      required: true,
     },
 
     album: {
