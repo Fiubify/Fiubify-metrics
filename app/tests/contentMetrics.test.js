@@ -127,4 +127,18 @@ describe("POST /contents/events/", () => {
     const allEvents = await request(app).get("/contents/events/");
     expect(allEvents.body.data).toHaveLength(5);
   });
+
+  it("Create an event without song", async () => {
+    const response = await request(app).post("/contents/events/").send({
+      action: "Creation",
+      genre: "Electronic",
+      tier: "Premium",
+      user: "3",
+      album: "Californication",
+    });
+
+    expect(response.status).toEqual(201);
+    const allEvents = await request(app).get("/contents/events/");
+    expect(allEvents.body.data).toHaveLength(5);
+  });
 });
