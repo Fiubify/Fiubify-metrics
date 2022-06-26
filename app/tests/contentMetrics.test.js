@@ -18,33 +18,51 @@ const testingEvents = [
     action: "Creation",
     genre: "Jazz",
     tier: "Free",
-    user: "1",
-    album: "Californication",
-    song: "Otherside",
+    userUId: "1",
+    albumName: "Californication",
+    albumId: "67723874wndwnjj221111",
+    songName: "Otherside",
+    songId: "77723874wndwnjj2211ssa",
   },
   {
     action: "Creation",
     genre: "Jazz",
     tier: "Free",
-    user: "1",
-    album: "Californication",
-    song: "Otherside",
+    userUId: "1",
+    albumName: "Californication",
+    albumId: "67723874wndwnjj221111",
+    songName: "Otherside",
+    songId: "77723874wndwnjj2211ssa",
   },
   {
     action: "Listened",
     genre: "Electronic",
     tier: "Free",
-    user: "1",
-    album: "Californication",
-    song: "Otherside",
+    userUId: "1",
+    albumName: "Californication",
+    albumId: "67723874wndwnjj221111",
+    songName: "Otherside",
+    songId: "77723874wndwnjj2211ssa",
   },
   {
     action: "Listened",
     genre: "Country",
     tier: "Premium",
-    user: "2",
-    album: "Californication",
-    song: "Otherside",
+    userUId: "2",
+    albumName: "Californication",
+    albumId: "67723874wndwnjj221111",
+    songName: "Otherside",
+    songId: "77723874wndwnjj2211ssa",
+  },
+  {
+    action: "Listened",
+    genre: "Folklore",
+    tier: "Free",
+    userUId: "3",
+    albumName: "Tango Latino",
+    albumId: "67723874wndwnjj221111",
+    songName: "Muchachos Esta Noche Me Emborracho",
+    songId: "77723874wndwnjj2211ssa",
   },
 ];
 
@@ -74,7 +92,7 @@ describe("GET /contents/events/", () => {
     const response = await request(app).get("/contents/events/");
 
     expect(response.status).toEqual(200);
-    expect(response.body.data).toHaveLength(4);
+    expect(response.body.data).toHaveLength(5);
   });
 
   it("Get all events filtered by action", async () => {
@@ -94,18 +112,20 @@ describe("GET /contents/events/", () => {
     expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(1);
   });
+
   it("Get all events filtered by tier", async () => {
     const response = await request(app)
       .get("/contents/events/")
       .query({ tier: "Free" });
 
     expect(response.status).toEqual(200);
-    expect(response.body.data).toHaveLength(3);
+    expect(response.body.data).toHaveLength(4);
   });
+
   it("Get all events filtered by user", async () => {
     const response = await request(app)
       .get("/contents/events/")
-      .query({ user: "1" });
+      .query({ userUId: "1" });
 
     expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(3);
@@ -118,17 +138,19 @@ describe("POST /contents/events/", () => {
       action: "Creation",
       genre: "Electronic",
       tier: "Premium",
-      user: "3",
-      album: "Californication",
-      song: "Otherside",
+      userUId: "3",
+      albumName: "Tango Latino",
+      albumId: "54723874w45gwnjj221111",
+      songName: "Muchachos Esta Noche Me Emborracho",
+      songId: "09723874wndwnjj2211ssa",
     });
 
     expect(response.status).toEqual(201);
     const allEvents = await request(app).get("/contents/events/");
-    expect(allEvents.body.data).toHaveLength(5);
+    expect(allEvents.body.data).toHaveLength(testingEvents.length + 1);
   });
 
-  it("Create an event without song", async () => {
+  it("Create an event without song throw error", async () => {
     const response = await request(app).post("/contents/events/").send({
       action: "Creation",
       genre: "Electronic",
@@ -137,8 +159,8 @@ describe("POST /contents/events/", () => {
       album: "Californication",
     });
 
-    expect(response.status).toEqual(201);
+    expect(response.status).toEqual(400);
     const allEvents = await request(app).get("/contents/events/");
-    expect(allEvents.body.data).toHaveLength(5);
+    expect(allEvents.body.data).toHaveLength(testingEvents.length);
   });
 });
