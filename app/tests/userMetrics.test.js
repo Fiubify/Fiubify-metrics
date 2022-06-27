@@ -17,26 +17,27 @@ const testingEvents = [
   {
     action: "Login",
     type: "Federated",
+    userUId: "729852938nsn2222",
   },
   {
     action: "Login",
     type: "Email",
+    userUId: "729852938nsn2221",
   },
   {
     action: "Login",
     type: "Email",
+    userUId: "729852938nsn2221",
   },
   {
     action: "Signup",
     type: "Federated",
+    userUId: "729852938nsn2222",
   },
   {
     action: "Signup",
     type: "Email",
-  },
-  {
-    action: "Signup",
-    type: "Email",
+    userUId: "729852938nsn2221",
   },
 ];
 
@@ -66,7 +67,7 @@ describe("GET /users/events/", () => {
     const response = await request(app).get("/users/events/");
 
     expect(response.status).toEqual(200);
-    expect(response.body.data).toHaveLength(6);
+    expect(response.body.data).toHaveLength(testingEvents.length);
   });
 
   it("Get all events filtered by action", async () => {
@@ -84,7 +85,16 @@ describe("GET /users/events/", () => {
       .query({ type: "Email" });
 
     expect(response.status).toEqual(200);
-    expect(response.body.data).toHaveLength(4);
+    expect(response.body.data).toHaveLength(3);
+  });
+
+  it("Get all events filtered by userUId", async () => {
+    const response = await request(app)
+        .get("/users/events/")
+        .query({ userUId: "729852938nsn2222" });
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(2);
   });
 });
 
@@ -93,10 +103,11 @@ describe("POST /users/events/", () => {
     const response = await request(app).post("/users/events/").send({
       action: "Signup",
       type: "Email",
+      userUId: "729852938nsn2223",
     });
 
     expect(response.status).toEqual(201);
     const allEvents = await request(app).get("/users/events");
-    expect(allEvents.body.data).toHaveLength(7);
+    expect(allEvents.body.data).toHaveLength(testingEvents.length + 1);
   });
 });
