@@ -3,7 +3,7 @@ const QueryParser = require("../utils/queryParser");
 const ContentEvent = require("../models/contentEvent");
 
 const getAllContentEvents = async (req, res, next) => {
-  const queryParams = ["action", "genre", "tier", "user", "album", "song"];
+  const queryParams = ["action", "genre", "tier", "userUId", "albumId", "albumName", "songId", "songName"];
 
   const queryParser = new QueryParser(queryParams, []);
   const query = queryParser.parseRequest(req);
@@ -20,28 +20,28 @@ const getAllContentEvents = async (req, res, next) => {
     }
   } catch (err) {
     next(ApiError.internalError("Internal error when getting songs"));
-    return;
   }
 };
 
 const createNewContentEvent = async (req, res, next) => {
-  const { action, tier, genre, user, album, song } = req.body;
+  const { action, tier, genre, userUId, albumId, albumName, songId, songName } = req.body;
 
   try {
     const newEvent = new ContentEvent({
       action: action,
       tier: tier,
       genre: genre,
-      user: user,
-      album: album,
-      song: song,
+      userUId: userUId,
+      albumId: albumId,
+      albumName: albumName,
+      songId: songId,
+      songName: songName,
     });
 
     await newEvent.save();
     res.status(201).send({});
   } catch (err) {
     next(ApiError.invalidArguments(`Invalid arguments passed`));
-    return;
   }
 };
 
