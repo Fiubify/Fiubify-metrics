@@ -140,9 +140,9 @@ describe("GET /contents/events/agg_by_song", () => {
     expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(2);
     expect(response.body.data[0].count).toEqual(2);
-    expect(response.body.data[0]._id).toEqual("77723874wndwnjj2211ssa");
+    expect(response.body.data[0]._id.songId).toEqual("77723874wndwnjj2211ssa");
     expect(response.body.data[1].count).toEqual(1);
-    expect(response.body.data[1]._id).toEqual("55523874wndwnjj2211ssa");
+    expect(response.body.data[1]._id.songName).toEqual("Muchachos Esta Noche Me Emborracho");
   });
 });
 
