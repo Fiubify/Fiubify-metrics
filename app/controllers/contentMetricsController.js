@@ -45,4 +45,27 @@ const createNewContentEvent = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllContentEvents, createNewContentEvent };
+
+const aggregateBySong = async (req, res, next) => {
+  try{
+    const result = ContentEvent.aggregate([
+      {
+        $group :
+          {
+            _id : "$songId",
+            count: { $sum: 1 }
+          }
+      },
+      {
+          $sort : { totalSaleAmount: -1 }
+      }]);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (e) {
+    console.error(e)
+    next(ApiError.internalError("Internal error when aggregating songs by title"));
+  }
+}
+
+module.exports = { getAllContentEvents, createNewContentEvent, aggregateBySong };
