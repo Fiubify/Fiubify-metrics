@@ -20,7 +20,7 @@ const testingEvents = [
     tier: "Free",
     userUId: "1",
     albumName: "Californication",
-    albumId: "67723874wndwnjj221111",
+    albumId: "66623874wndwnjj221111",
     songName: "Otherside",
     songId: "77723874wndwnjj2211ssa",
   },
@@ -30,17 +30,17 @@ const testingEvents = [
     tier: "Free",
     userUId: "1",
     albumName: "Californication",
-    albumId: "67723874wndwnjj221111",
+    albumId: "66623874wndwnjj221111",
     songName: "Otherside",
     songId: "77723874wndwnjj2211ssa",
   },
   {
     action: "Listened",
-    genre: "Electronic",
+    genre: "Folklore",
     tier: "Free",
     userUId: "1",
     albumName: "Californication",
-    albumId: "67723874wndwnjj221111",
+    albumId: "55523874wndwnjj221111",
     songName: "Otherside",
     songId: "77723874wndwnjj2211ssa",
   },
@@ -50,7 +50,7 @@ const testingEvents = [
     tier: "Premium",
     userUId: "2",
     albumName: "Californication",
-    albumId: "67723874wndwnjj221111",
+    albumId: "66623874wndwnjj221111",
     songName: "Otherside",
     songId: "77723874wndwnjj2211ssa",
   },
@@ -60,9 +60,9 @@ const testingEvents = [
     tier: "Free",
     userUId: "3",
     albumName: "Tango Latino",
-    albumId: "67723874wndwnjj221111",
+    albumId: "77723874wndwnjj221111",
     songName: "Muchachos Esta Noche Me Emborracho",
-    songId: "77723874wndwnjj2211ssa",
+    songId: "55523874wndwnjj2211ssa",
   },
 ];
 
@@ -129,6 +129,45 @@ describe("GET /contents/events/", () => {
 
     expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(3);
+  });
+});
+
+describe("GET /contents/events/agg_by_song", () => {
+  it("Get qty of times every song was listened", async () => {
+    const response = await request(app)
+        .get("/contents/events/agg_by_song/");
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(2);
+    expect(response.body.data[0].count).toEqual(2);
+    expect(response.body.data[0]._id.songId).toEqual("77723874wndwnjj2211ssa");
+    expect(response.body.data[1].count).toEqual(1);
+    expect(response.body.data[1]._id.songName).toEqual("Muchachos Esta Noche Me Emborracho");
+  });
+});
+
+describe("GET /contents/events/agg_by_album", () => {
+  it("Get qty of times every album was listened", async () => {
+    const response = await request(app)
+        .get("/contents/events/agg_by_album/");
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(3);
+    expect(response.body.data[0].count).toEqual(1);
+    expect(response.body.data[1].count).toEqual(1);
+    expect(response.body.data[2].count).toEqual(1);
+  });
+});
+
+describe("GET /contents/events/agg_by_genre", () => {
+  it("Get qty of times every genre was listened", async () => {
+    const response = await request(app)
+        .get("/contents/events/agg_by_genre/");
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(2);
+    expect(response.body.data[0]._id).toEqual("Folklore");
+    expect(response.body.data[0].count).toEqual(2);
   });
 });
 
