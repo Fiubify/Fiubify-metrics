@@ -62,7 +62,7 @@ const testingEvents = [
     albumName: "Tango Latino",
     albumId: "67723874wndwnjj221111",
     songName: "Muchachos Esta Noche Me Emborracho",
-    songId: "77723874wndwnjj2211ssa",
+    songId: "55523874wndwnjj2211ssa",
   },
 ];
 
@@ -129,6 +129,20 @@ describe("GET /contents/events/", () => {
 
     expect(response.status).toEqual(200);
     expect(response.body.data).toHaveLength(3);
+  });
+});
+
+describe("GET /contents/events/agg_by_song", () => {
+  it("Get qty of times every song was listened", async () => {
+    const response = await request(app)
+        .get("/contents/events/agg_by_song/");
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(2);
+    expect(response.body.data[0].count).toEqual(2);
+    expect(response.body.data[0]._id).toEqual("77723874wndwnjj2211ssa");
+    expect(response.body.data[1].count).toEqual(1);
+    expect(response.body.data[1]._id).toEqual("55523874wndwnjj2211ssa");
   });
 });
 
