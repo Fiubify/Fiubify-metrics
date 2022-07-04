@@ -46,7 +46,7 @@ const createNewContentEvent = async (req, res, next) => {
 };
 
 
-const aggregateBySong = async (req, res, next) => {
+const aggregateBySongsListened = async (req, res, next) => {
     try {
         const result = await ContentEvent.aggregate([
             {
@@ -68,8 +68,34 @@ const aggregateBySong = async (req, res, next) => {
         });
     } catch (e) {
         console.error(e)
-        next(ApiError.internalError("Internal error when aggregating songs by title"));
+        next(ApiError.internalError("Internal error when aggregating listened songs"));
     }
 };
 
-module.exports = {getAllContentEvents, createNewContentEvent, aggregateBySong};
+const aggregateByAlbumsListened = async (req, res, next) => {
+    try {
+        const result = await ContentEvent.aggregate([
+            {
+                $match:
+                    {action: "Listened"}
+            },
+            {
+                $group:
+                    {
+                        _id: {albumId: "$albumId", albumName: "$albumName"},
+                        count: {$sum: 1}
+                    }
+            },
+            {
+                $sort: {count: -1}
+            }]);
+        res.status(200).json({
+            data: result,
+        });
+    } catch (e) {
+        console.error(e)
+        next(ApiError.internalError("Internal error when aggregating listened albums"));
+    }
+};
+
+module.exports = {getAllContentEvents, createNewContentEvent, aggregateBySongsListened, aggregateByAlbumsListened};
