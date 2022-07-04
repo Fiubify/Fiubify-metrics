@@ -36,7 +36,7 @@ const testingEvents = [
   },
   {
     action: "Listened",
-    genre: "Electronic",
+    genre: "Folklore",
     tier: "Free",
     userUId: "1",
     albumName: "Californication",
@@ -156,6 +156,18 @@ describe("GET /contents/events/agg_by_album", () => {
     expect(response.body.data[0].count).toEqual(1);
     expect(response.body.data[1].count).toEqual(1);
     expect(response.body.data[2].count).toEqual(1);
+  });
+});
+
+describe("GET /contents/events/agg_by_genre", () => {
+  it("Get qty of times every genre was listened", async () => {
+    const response = await request(app)
+        .get("/contents/events/agg_by_genre/");
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(2);
+    expect(response.body.data[0]._id).toEqual("Folklore");
+    expect(response.body.data[0].count).toEqual(2);
   });
 });
 
