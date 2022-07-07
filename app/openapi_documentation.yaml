@@ -1,6 +1,6 @@
 openapi: '3.0.3'
 info:
-  title: 'App Metrics'
+  title: 'Metrics'
   description: 'User and Content related metrics'
   version: '1.0'
 servers:
