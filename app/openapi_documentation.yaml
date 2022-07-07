@@ -1,0 +1,294 @@
+openapi: '3.0.3'
+info:
+  title: 'App Metrics'
+  description: 'User and Content related metrics'
+  version: '1.0'
+servers:
+  - url: http://localhost:3000
+
+components:
+  schemas:
+    contentEvent:
+      type: object
+      properties:
+        _id:
+          type: string
+        action:
+          type: string
+          enum:
+            - "Creation"
+            - "Listened"
+        genre:
+          type: string
+        tier:
+          type: string
+        userUId:
+          type: string
+        songId:
+          type: string
+        songName:
+          type: string
+        albumId:
+          type: string
+        albumName:
+          type: string
+        timestamps:
+          createdAt: true
+          updatedAt: false
+      required:
+        - "action"
+        - "genre"
+        - "tier"
+        - "userUId"
+        - "songId"
+        - "songName"
+        - "albumId"
+        - "albumName"
+
+      example:
+        action: "Creation"
+        genre: "Rock"
+        tier: "Free"
+        userUId: "1"
+        albumName: "Californication"
+        albumId: "66623874wndwnjj221111"
+        songName: "Otherside"
+        songId: "77723874wndwnjj2211ssa"
+
+    userEvent:
+      type: object
+      properties:
+        _id:
+          type: string
+        action:
+          type: string
+          enum:
+            - "Login"
+            - "Signup"
+            - "Password"
+        type:
+          type: string
+          enum:
+            - "Federated"
+            - "Email"
+            - "Reset"
+        userUId:
+          type: string
+        timestamps:
+          properties:
+            createdAt: true
+            updatedAt: false
+      required:
+        - "action"
+        - "userUId"
+
+      example:
+        action: "Login",
+        type: "Email",
+        userUId: "729852938nsn2221",
+
+paths:
+  contents/events:
+    get:
+      description: 'Get all the content events matching your search criteria'
+      parameters:
+        - name: action
+          in: query
+          description: 'Action type'
+          schema:
+            type: string
+        - name: genre
+          in: query
+          description: 'Song`s genre'
+          schema:
+            type: string
+        - name: tier
+          in: query
+          description: 'Song`s tier'
+          schema:
+            type: string
+        - name: userUId
+          in: query
+          description: 'User`s uid'
+          schema:
+            type: string
+        - name: albumId
+            in: query
+            description: 'Album`s id'
+            schema:
+              type: string
+        - name: albumName
+            in: query
+            description: 'Album`s name'
+            schema:
+              type: string
+        - name: songId
+            in: query
+            description: 'Song`s id'
+            schema:
+              type: string
+        - name: songName
+            in: query
+            description: 'Song`s name'
+            schema:
+              type: string
+      responses:
+        '200':
+          description: 'List with all the content events matching the search criteria'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/contentEvent'
+        '404':
+          description: 'No users events matching the search criteria'
+          '500':
+            description: 'Internal error'
+    post:
+      description: 'Add a new content event'
+      requestBody:
+        description: Details of the content event to add
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/contentEvent'
+      responses:
+        '201':
+          description: 'Book successfully added to the library'
+        '400':
+          description: 'Invalid arguments'
+
+  contents/events/agg_by_song:
+    get:
+      description: 'Get listened songs (id+name)'
+      responses:
+        '200':
+          description: 'List with all the listened songs sorted by count_listened descending'
+          content:
+            'application/json':
+              schema:
+                type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: object
+                        properties:
+                          songId:
+                            type: string
+                          songName:
+                            type: string
+                        example:
+                          _id:
+                            songId: "77723874wndwnjj2211ssa"
+                            songName: "Otherside"
+                      count:
+                        type: integer
+                        format: int64
+                        example: 4
+        '500':
+          description: 'Internal error'
+
+  contents/events/agg_by_album:
+    get:
+      description: 'Get listened albums (id+name)'
+      responses:
+        '200':
+          description: 'List with all the listened albums sorted by count_listened descending'
+          content:
+            'application/json':
+              schema:
+                type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: object
+                        properties:
+                          albumId:
+                            type: string
+                          albumName:
+                            type: string
+                        example:
+                          _id:
+                            songId: "66623874wndwnjj221111"
+                            songName: "Californication"
+                      count:
+                        type: integer
+                        format: int64
+                        example: 2
+        '500':
+          description: 'Internal error'
+
+  contents/events/agg_by_genre:
+    get:
+      description: 'Get listened genres'
+      responses:
+        '200':
+          description: 'List with all the listened genres sorted by count_listened descending'
+          content:
+            'application/json':
+              schema:
+                type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "Rock"
+                      count:
+                        type: integer
+                        format: int64
+                        example: 2
+        '500':
+          description: 'Internal error'
+
+  users/events:
+    get:
+      description: 'Get all the user events matching your search criteria'
+      parameters:
+        - name: action
+          in: query
+          description: 'User`s action'
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: 'User`s action type'
+          schema:
+            type: string
+        - name: userUId
+          in: query
+          description: 'User`s uid'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'List with all the users events matching the search criteria'
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userEvent'
+        '404':
+          description: 'No users events matching the search criteria'
+        '500':
+          description: 'Internal error'
+
+    post:
+      description: 'Add a new user event'
+      requestBody:
+        description: Details of the content event to add
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/userEvent'
+      responses:
+        '201':
+          description: 'Book successfully added to the library'
+        '400':
+          description: 'Invalid arguments'
