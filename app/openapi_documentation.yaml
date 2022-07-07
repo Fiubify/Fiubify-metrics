@@ -1,11 +1,10 @@
-openapi: '3.0.3'
+openapi: 3.0.3
 info:
-  title: 'Metrics'
-  description: 'User and Content related metrics'
-  version: '1.0'
+  title: Fiubify Metrics
+  description: User and Content Metrics
+  version: 1.0.0-oas3
 servers:
-  - url: http://localhost:3000
-
+  - url: https://fiubify-metrics-staging.herokuapp.com/
 components:
   schemas:
     contentEvent:
@@ -16,8 +15,8 @@ components:
         action:
           type: string
           enum:
-            - "Creation"
-            - "Listened"
+            - Creation
+            - Listened
         genre:
           type: string
         tier:
@@ -33,27 +32,28 @@ components:
         albumName:
           type: string
         timestamps:
-          createdAt: true
-          updatedAt: false
+          type: object
+          properties:
+            createdAt:
+              description: Date type
       required:
-        - "action"
-        - "genre"
-        - "tier"
-        - "userUId"
-        - "songId"
-        - "songName"
-        - "albumId"
-        - "albumName"
-
+        - action
+        - genre
+        - tier
+        - userUId
+        - songId
+        - songName
+        - albumId
+        - albumName
       example:
-        action: "Creation"
-        genre: "Rock"
-        tier: "Free"
-        userUId: "1"
-        albumName: "Californication"
-        albumId: "66623874wndwnjj221111"
-        songName: "Otherside"
-        songId: "77723874wndwnjj2211ssa"
+        action: Creation
+        genre: Rock
+        tier: Free
+        userUId: '1'
+        albumName: Californication
+        albumId: 66623874wndwnjj221111
+        songName: Otherside
+        songId: 77723874wndwnjj2211ssa
 
     userEvent:
       type: object
@@ -63,232 +63,230 @@ components:
         action:
           type: string
           enum:
-            - "Login"
-            - "Signup"
-            - "Password"
+            - Login
+            - Signup
+            - Password
         type:
           type: string
           enum:
-            - "Federated"
-            - "Email"
-            - "Reset"
+            - Federated
+            - Email
+            - Reset
         userUId:
           type: string
         timestamps:
+          type: object
           properties:
-            createdAt: true
-            updatedAt: false
+            createdAt:
+              description: Date type
       required:
-        - "action"
-        - "userUId"
-
+        - action
+        - userUId
       example:
-        action: "Login",
-        type: "Email",
-        userUId: "729852938nsn2221",
-
+        action: Login
+        type: Email
+        userUId: 729852938nsn2221
 paths:
   contents/events:
     get:
-      description: 'Get all the content events matching your search criteria'
+      description: Get all the content events matching your search criteria
       parameters:
         - name: action
           in: query
-          description: 'Action type'
+          description: Action type
           schema:
             type: string
         - name: genre
           in: query
-          description: 'Song`s genre'
+          description: Song`s genre
           schema:
             type: string
         - name: tier
           in: query
-          description: 'Song`s tier'
+          description: Song`s tier
           schema:
             type: string
         - name: userUId
           in: query
-          description: 'User`s uid'
+          description: User`s uid
           schema:
             type: string
         - name: albumId
-            in: query
-            description: 'Album`s id'
-            schema:
-              type: string
+          in: query
+          description: Album`s id
+          schema:
+            type: string
         - name: albumName
-            in: query
-            description: 'Album`s name'
-            schema:
-              type: string
+          in: query
+          description: Album`s name
+          schema:
+            type: string
         - name: songId
-            in: query
-            description: 'Song`s id'
-            schema:
-              type: string
+          in: query
+          description: Song`s id
+          schema:
+            type: string
         - name: songName
-            in: query
-            description: 'Song`s name'
-            schema:
-              type: string
+          in: query
+          description: Song`s name
+          schema:
+            type: string
       responses:
         '200':
-          description: 'List with all the content events matching the search criteria'
+          description: List with all the content events matching the search criteria
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/contentEvent'
         '404':
-          description: 'No users events matching the search criteria'
           '500':
-            description: 'Internal error'
+            description: Internal error
+          description: No users events matching the search criteria
     post:
-      description: 'Add a new content event'
+      description: Add a new content event
       requestBody:
         description: Details of the content event to add
         required: true
         content:
-          'application/json':
+          application/json:
             schema:
               $ref: '#/components/schemas/contentEvent'
       responses:
         '201':
-          description: 'Book successfully added to the library'
+          description: Book successfully added to the library
         '400':
-          description: 'Invalid arguments'
-
+          description: Invalid arguments
   contents/events/agg_by_song:
     get:
-      description: 'Get listened songs (id+name)'
+      description: Get listened songs (id+name)
       responses:
         '200':
-          description: 'List with all the listened songs sorted by count_listened descending'
+          description: List with all the listened songs sorted by count_listened descending
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
-                  items:
-                    type: object
-                    properties:
-                      _id:
-                        type: object
-                        properties:
-                          songId:
-                            type: string
-                          songName:
-                            type: string
-                        example:
-                          _id:
-                            songId: "77723874wndwnjj2211ssa"
-                            songName: "Otherside"
-                      count:
-                        type: integer
-                        format: int64
-                        example: 4
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: object
+                      properties:
+                        songId:
+                          type: string
+                        songName:
+                          type: string
+                      example:
+                        _id:
+                          songId: 77723874wndwnjj2211ssa
+                          songName: Otherside
+                    count:
+                      type: integer
+                      format: int64
+                      example: 4
         '500':
-          description: 'Internal error'
-
+          description: Internal error
   contents/events/agg_by_album:
     get:
-      description: 'Get listened albums (id+name)'
+      description: Get listened albums (id+name)
       responses:
         '200':
-          description: 'List with all the listened albums sorted by count_listened descending'
+          description: >-
+            List with all the listened albums sorted by count_listened
+            descending
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
-                  items:
-                    type: object
-                    properties:
-                      _id:
-                        type: object
-                        properties:
-                          albumId:
-                            type: string
-                          albumName:
-                            type: string
-                        example:
-                          _id:
-                            songId: "66623874wndwnjj221111"
-                            songName: "Californication"
-                      count:
-                        type: integer
-                        format: int64
-                        example: 2
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: object
+                      properties:
+                        albumId:
+                          type: string
+                        albumName:
+                          type: string
+                      example:
+                        _id:
+                          songId: 66623874wndwnjj221111
+                          songName: Californication
+                    count:
+                      type: integer
+                      format: int64
+                      example: 2
         '500':
-          description: 'Internal error'
-
+          description: Internal error
   contents/events/agg_by_genre:
     get:
-      description: 'Get listened genres'
+      description: Get listened genres
       responses:
         '200':
-          description: 'List with all the listened genres sorted by count_listened descending'
+          description: >-
+            List with all the listened genres sorted by count_listened
+            descending
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
-                  items:
-                    type: object
-                    properties:
-                      _id:
-                        type: string
-                        example: "Rock"
-                      count:
-                        type: integer
-                        format: int64
-                        example: 2
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: Rock
+                    count:
+                      type: integer
+                      format: int64
+                      example: 2
         '500':
-          description: 'Internal error'
-
+          description: Internal error
   users/events:
     get:
-      description: 'Get all the user events matching your search criteria'
+      description: Get all the user events matching your search criteria
       parameters:
         - name: action
           in: query
-          description: 'User`s action'
+          description: User`s action
           schema:
             type: string
         - name: type
           in: query
-          description: 'User`s action type'
+          description: User`s action type
           schema:
             type: string
         - name: userUId
           in: query
-          description: 'User`s uid'
+          description: User`s uid
           schema:
             type: string
       responses:
         '200':
-          description: 'List with all the users events matching the search criteria'
+          description: List with all the users events matching the search criteria
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/userEvent'
         '404':
-          description: 'No users events matching the search criteria'
+          description: No users events matching the search criteria
         '500':
-          description: 'Internal error'
-
+          description: Internal error
     post:
-      description: 'Add a new user event'
+      description: Add a new user event
       requestBody:
         description: Details of the content event to add
         required: true
         content:
-          'application/json':
+          application/json:
             schema:
               $ref: '#/components/schemas/userEvent'
       responses:
         '201':
-          description: 'Book successfully added to the library'
+          description: Book successfully added to the library
         '400':
-          description: 'Invalid arguments'
+          description: Invalid arguments
